@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AdminTableManagePage from './pages/admin/AdminTableManagePage';
 
 // Customer Pages (lazy loaded by each unit)
 // Admin Pages (lazy loaded by each unit)
@@ -16,8 +18,8 @@ export default function App() {
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<div>Admin Login (Unit 1)</div>} />
-        <Route path="/admin/dashboard" element={<div>Dashboard (Unit 5)</div>} />
-        <Route path="/admin/tables" element={<div>Table Manage (Unit 5)</div>} />
+        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/admin/tables" element={<AdminTableManagePage />} />
         <Route path="/admin/menus" element={<div>Menu Manage (Unit 2)</div>} />
 
         {/* Default */}
