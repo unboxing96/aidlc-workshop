@@ -10,7 +10,7 @@ export default function MenuCard({ menu, onAdd }: Props) {
     <div className="border rounded-lg overflow-hidden shadow-sm">
       <div className="h-40 bg-gray-100 flex items-center justify-center">
         {menu.imageUrl ? (
-          <img src={menu.imageUrl} alt={menu.name} className="h-full w-full object-cover" />
+          <img src={`http://localhost:8080${menu.imageUrl}`} alt={menu.name} className="h-full w-full object-cover" />
         ) : (
           <span className="text-gray-400 text-sm">이미지 없음</span>
         )}

@@ -13,6 +13,7 @@ export function useTableAuth() {
     try {
       const { data } = await tableApi.authenticateToken(token);
       localStorage.setItem('tableToken', token);
+      localStorage.setItem('tableId', String(data.tableId));
       setTableInfo(data);
       return data;
     } catch (e: any) {

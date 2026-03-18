@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DashboardService {
 
-    // TODO: [통합] Unit 3의 OrderRepository로 교체 (com.tableorder.order.OrderRepository)
+    // Uses order.OrderRepository
     private final OrderRepository orderRepository;
     // TODO: [통합] Unit 1의 TableRepository로 교체 (com.tableorder.table.TableRepository)
     private final TableRepository tableRepository;

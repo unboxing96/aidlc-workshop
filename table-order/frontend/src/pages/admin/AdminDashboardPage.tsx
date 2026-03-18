@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { dashboardApi, DashboardTableCard, OrderDetailItem } from '../../services/dashboardApi';
+import { tableApi } from '../../services/tableApi';
 import { OrderStatus } from '../../types';
 import { useOrderSSE } from '../../hooks/useOrderSSE';
 import TableCard from '../../components/TableCard';
@@ -63,9 +64,28 @@ export default function AdminDashboardPage() {
 
   if (loading) return <div className="p-6 text-gray-500">로딩 중...</div>;
 
+  const handleAddTable = async () => {
+    const nextNumber = cards.length > 0 ? Math.max(...cards.map(c => c.tableNumber)) + 1 : 1;
+    const input = prompt('테이블 번호를 입력하세요', String(nextNumber));
+    if (!input) return;
+    const num = parseInt(input, 10);
+    if (isNaN(num) || num <= 0) { alert('올바른 번호를 입력하세요.'); return; }
+    try {
+      await tableApi.createTable(num);
+      loadDashboard();
+    } catch (e: any) {
+      alert(e.response?.data?.message || '테이블 생성 실패');
+    }
+  };
+
   return (
     <div className="p-6" data-testid="admin-dashboard-page">
-      <h1 className="text-2xl font-bold mb-4">주문 대시보드</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">주문 대시보드</h1>
+        <button onClick={handleAddTable} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          + 테이블 추가
+        </button>
+      </div>
       <DashboardFilter currentFilter={filter} onFilterChange={setFilter} />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {filteredCards.map((card) => (
