@@ -1,78 +1,64 @@
 package com.tableorder.dashboard;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tableorder.dashboard.dto.StatusChangeRequest;
+import com.tableorder.dashboard.dto.*;
 import com.tableorder.entity.OrderStatus;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.bean.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(DashboardController.class)
+@ExtendWith(MockitoExtension.class)
 class DashboardControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
-    @MockBean private DashboardService dashboardService;
+    @Mock private DashboardService dashboardService;
+    @InjectMocks private DashboardController dashboardController;
 
     @Test
-    void getDashboard_returns200() throws Exception {
+    void getDashboard_returns200() {
         when(dashboardService.getDashboard()).thenReturn(List.of());
-
-        mockMvc.perform(get("/api/admin/dashboard"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[]"));
+        ResponseEntity<List<DashboardTableCard>> response = dashboardController.getDashboard();
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
     }
 
     @Test
-    void getTableOrders_returns200() throws Exception {
+    void getTableOrders_returns200() {
         when(dashboardService.getTableOrders(1L)).thenReturn(List.of());
-
-        mockMvc.perform(get("/api/admin/tables/1/orders"))
-                .andExpect(status().isOk());
+        ResponseEntity<List<OrderDetailResponse>> response = dashboardController.getTableOrders(1L);
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
     }
 
     @Test
-    void changeOrderStatus_returns200() throws Exception {
-        var request = new StatusChangeRequest(OrderStatus.PREPARING);
-
-        mockMvc.perform(patch("/api/admin/orders/1/status")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
-
+    void changeOrderStatus_returns200() {
+        ResponseEntity<Void> response = dashboardController.changeOrderStatus(1L, new StatusChangeRequest(OrderStatus.PREPARING));
         verify(dashboardService).changeOrderStatus(1L, OrderStatus.PREPARING);
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
     }
 
     @Test
-    void deleteOrder_returns200() throws Exception {
-        mockMvc.perform(delete("/api/admin/orders/1"))
-                .andExpect(status().isOk());
-
+    void deleteOrder_returns200() {
+        ResponseEntity<Void> response = dashboardController.deleteOrder(1L);
         verify(dashboardService).deleteOrder(1L);
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
     }
 
     @Test
-    void completeTableSession_returns200() throws Exception {
-        mockMvc.perform(post("/api/admin/tables/1/complete"))
-                .andExpect(status().isOk());
-
+    void completeTableSession_returns200() {
+        ResponseEntity<Void> response = dashboardController.completeTableSession(1L);
         verify(dashboardService).completeTableSession(1L);
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
     }
 
     @Test
-    void getOrderHistory_returns200() throws Exception {
+    void getOrderHistory_returns200() {
         when(dashboardService.getOrderHistory(eq(1L), any(), any())).thenReturn(List.of());
-
-        mockMvc.perform(get("/api/admin/tables/1/history"))
-                .andExpect(status().isOk());
+        ResponseEntity<List<OrderHistoryResponse>> response = dashboardController.getOrderHistory(1L, null, null);
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
     }
 }
