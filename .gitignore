@@ -1,3 +1,14 @@
 .DS_Store
 aidlc-docs/audit.md
 aidlc-docs/aidlc-state.md
+
+# Backend
+table-order/backend/build/
+table-order/backend/.gradle/
+table-order/backend/data/
+table-order/backend/uploads/
+table-order/backend/gradle/wrapper/gradle-wrapper.jar
+
+# Frontend
+table-order/frontend/node_modules/
+table-order/frontend/dist/
