@@ -1,53 +1,85 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useOrderSSE } from '../hooks/useOrderSSE';
 
 class MockEventSource {
-  onopen: (() => void) | null = null;
-  onmessage: ((event: { data: string }) => void) | null = null;
-  onerror: (() => void) | null = null;
-  close = vi.fn();
-  constructor(public url: string) {
+  url: string;
+  listeners: Record<string, ((e: MessageEvent) => void)[]> = {};
+  onerror: ((e: Event) => void) | null = null;
+  closed = false;
+
+  constructor(url: string) {
+    this.url = url;
     MockEventSource.instances.push(this);
   }
+
+  addEventListener(type: string, cb: (e: MessageEvent) => void) {
+    if (!this.listeners[type]) this.listeners[type] = [];
+    this.listeners[type].push(cb);
+  }
+
+  close() {
+    this.closed = true;
+  }
+
+  simulateEvent(type: string, data: string) {
+    this.listeners[type]?.forEach((cb) =>
+      cb({ data } as MessageEvent)
+    );
+  }
+
   static instances: MockEventSource[] = [];
-  static reset() { MockEventSource.instances = []; }
+  static reset() {
+    MockEventSource.instances = [];
+  }
 }
 
+beforeEach(() => {
+  MockEventSource.reset();
+  vi.stubGlobal('EventSource', MockEventSource);
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 describe('useOrderSSE', () => {
-  beforeEach(() => {
-    MockEventSource.reset();
-    (global as any).EventSource = MockEventSource;
-    localStorage.setItem('adminToken', 'test-token');
-  });
-
-  afterEach(() => {
-    localStorage.clear();
-    delete (global as any).EventSource;
-  });
-
-  it('connects to SSE endpoint', () => {
-    renderHook(() => useOrderSSE({}));
+  it('EventSource 연결을 생성한다', () => {
+    const onEvent = vi.fn();
+    renderHook(() =>
+      useOrderSSE({ url: 'http://localhost:8080/api/sse/orders/admin', onEvent })
+    );
     expect(MockEventSource.instances).toHaveLength(1);
-    expect(MockEventSource.instances[0].url).toContain('/api/admin/sse');
+    expect(MockEventSource.instances[0].url).toBe('http://localhost:8080/api/sse/orders/admin');
   });
 
-  it('calls onOrderCreated handler', () => {
-    const onOrderCreated = vi.fn();
-    renderHook(() => useOrderSSE({ onOrderCreated }));
-
+  it('이벤트를 수신하면 onEvent 콜백을 호출한다', () => {
+    const onEvent = vi.fn();
+    renderHook(() =>
+      useOrderSSE({ url: 'http://localhost:8080/api/sse/orders/admin', onEvent })
+    );
     const es = MockEventSource.instances[0];
     act(() => {
-      es.onmessage?.({ data: JSON.stringify({ type: 'ORDER_CREATED', payload: { id: 1 } }) });
+      es.simulateEvent('ORDER_CREATED', JSON.stringify({ orderId: 1 }));
     });
-
-    expect(onOrderCreated).toHaveBeenCalledWith({ id: 1 });
+    expect(onEvent).toHaveBeenCalledWith('ORDER_CREATED', { orderId: 1 });
   });
 
-  it('closes EventSource on unmount', () => {
-    const { unmount } = renderHook(() => useOrderSSE({}));
+  it('unmount 시 EventSource를 닫는다', () => {
+    const onEvent = vi.fn();
+    const { unmount } = renderHook(() =>
+      useOrderSSE({ url: 'http://localhost:8080/api/sse/orders/admin', onEvent })
+    );
     const es = MockEventSource.instances[0];
     unmount();
-    expect(es.close).toHaveBeenCalled();
+    expect(es.closed).toBe(true);
+  });
+
+  it('enabled=false이면 연결하지 않는다', () => {
+    const onEvent = vi.fn();
+    renderHook(() =>
+      useOrderSSE({ url: 'http://localhost:8080/api/sse/orders/admin', onEvent, enabled: false })
+    );
+    expect(MockEventSource.instances).toHaveLength(0);
   });
 });

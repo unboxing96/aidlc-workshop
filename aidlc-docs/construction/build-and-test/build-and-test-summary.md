@@ -1,36 +1,56 @@
-# Build and Test Summary - Unit 5: 관리자 대시보드
+# Build and Test Summary - Unit 3: 장바구니 및 주문
 
-## Build Status
-- **Backend**: Spring Boot + Gradle
-- **Frontend**: React + Vite + TypeScript
-- **Status**: 빌드 가이드 생성 완료 (실행 대기)
+## Backend Build & Test
 
-## Test Execution Summary
+### Build
+- **Command**: `cd table-order/backend && ./gradlew build`
+- **Result**: ✅ BUILD SUCCESSFUL
+- **Java**: OpenJDK 21, Spring Boot 3.2.5, Gradle 8.7
 
 ### Unit Tests
-| 영역 | 총 테스트 | 상태 |
-|---|---|---|
-| Backend Service | 8 | 실행 대기 |
-| Backend Controller | 6 | 실행 대기 |
-| Frontend API | 6 | 실행 대기 |
-| Frontend SSE Hook | 3 | 실행 대기 |
-| Frontend Page | 2 | 실행 대기 |
-| **합계** | **25** | |
+| Test Class | Tests | Result |
+|-----------|-------|--------|
+| OrderServiceTest | 5 | ✅ All Passed |
+| OrderControllerTest | 3 | ✅ All Passed |
+| JwtUtilTest (Unit 0) | - | ✅ Passed |
+| GlobalExceptionHandlerTest (Unit 0) | - | ✅ Passed |
 
-### Integration Tests
-- **시나리오**: 3개 (주문→대시보드, 대시보드→SSE, 이용완료→테이블)
-- **Status**: 통합 단계에서 실행 예정
+### Test Details - OrderServiceTest
+- ✅ createOrder_성공_세션자동시작
+- ✅ createOrder_존재하지않는테이블
+- ✅ createOrder_존재하지않는메뉴
+- ✅ getOrdersByTable_세션없으면빈결과
+- ✅ getOrdersByTable_성공
 
-### Performance Tests
-- N/A (MVP 단계, 통합 후 실행)
+### Test Details - OrderControllerTest
+- ✅ createOrder_성공 (201 Created)
+- ✅ createOrder_빈항목_400 (Validation)
+- ✅ getOrdersByTable_성공 (200 OK)
 
-## 생성된 파일
-1. ✅ build-instructions.md
-2. ✅ unit-test-instructions.md
-3. ✅ integration-test-instructions.md
-4. ✅ build-and-test-summary.md
+---
 
-## 통합 전 TODO
-- [ ] Unit 3 OrderRepository 통합
-- [ ] Unit 1 TableRepository 통합
-- [ ] Unit 4 SseEmitterService SSE 발행 연결
+## Frontend Build & Test
+
+### Test
+- **Command**: `cd table-order/frontend && npx vitest run`
+- **Result**: ✅ 7 test files, 25 tests passed
+
+### Unit Tests
+| Test File | Tests | Result |
+|-----------|-------|--------|
+| cartStore.test.ts (Unit 0) | 6 | ✅ All Passed |
+| CartItem.test.tsx | 5 | ✅ All Passed |
+| StatusBadge.test.tsx | 3 | ✅ All Passed |
+| CustomerCartPage.test.tsx | 3 | ✅ All Passed |
+| CustomerOrderPage.test.tsx | 3 | ✅ All Passed |
+| CustomerOrderHistoryPage.test.tsx | 3 | ✅ All Passed |
+| orderApi.test.ts | 2 | ✅ All Passed |
+
+---
+
+## Summary
+| Layer | Build | Tests | Passed | Failed |
+|-------|-------|-------|--------|--------|
+| Backend | ✅ | 8+ | 8+ | 0 |
+| Frontend | ✅ | 25 | 25 | 0 |
+| **Total** | **✅** | **33+** | **33+** | **0** |

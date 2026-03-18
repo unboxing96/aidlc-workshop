@@ -1,54 +1,55 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
+import type { SseEventType } from '../types';
 
 interface UseOrderSSEOptions {
-  onOrderCreated?: (payload: unknown) => void;
-  onOrderStatusChanged?: (payload: unknown) => void;
-  onOrderDeleted?: (payload: unknown) => void;
-  onTableSessionCompleted?: (payload: unknown) => void;
+  url: string;
+  onEvent: (type: SseEventType, payload: unknown) => void;
+  enabled?: boolean;
 }
 
-export function useOrderSSE(options: UseOrderSSEOptions) {
-  const [connected, setConnected] = useState(false);
+export function useOrderSSE({ url, onEvent, enabled = true }: UseOrderSSEOptions) {
+  const onEventRef = useRef(onEvent);
+  onEventRef.current = onEvent;
+
   const eventSourceRef = useRef<EventSource | null>(null);
-  const optionsRef = useRef(options);
-  optionsRef.current = options;
 
   const connect = useCallback(() => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) return;
+    if (!enabled) return;
 
-    const es = new EventSource(
-      `http://localhost:8080/api/admin/sse?token=${encodeURIComponent(token)}`
-    );
+    const es = new EventSource(url);
+    eventSourceRef.current = es;
 
-    es.onopen = () => setConnected(true);
+    const eventTypes: SseEventType[] = [
+      'ORDER_CREATED',
+      'ORDER_STATUS_CHANGED',
+      'ORDER_DELETED',
+      'TABLE_SESSION_COMPLETED',
+    ];
 
-    es.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        const handlers: Record<string, ((p: unknown) => void) | undefined> = {
-          ORDER_CREATED: optionsRef.current.onOrderCreated,
-          ORDER_STATUS_CHANGED: optionsRef.current.onOrderStatusChanged,
-          ORDER_DELETED: optionsRef.current.onOrderDeleted,
-          TABLE_SESSION_COMPLETED: optionsRef.current.onTableSessionCompleted,
-        };
-        handlers[data.type]?.(data.payload);
-      } catch { /* ignore parse errors */ }
-    };
+    eventTypes.forEach((type) => {
+      es.addEventListener(type, (e: MessageEvent) => {
+        try {
+          const payload = JSON.parse(e.data);
+          onEventRef.current(type, payload);
+        } catch {
+          onEventRef.current(type, e.data);
+        }
+      });
+    });
 
     es.onerror = () => {
-      setConnected(false);
       es.close();
-      setTimeout(connect, 1000);
+      eventSourceRef.current = null;
+      // 자동 재연결: 3초 후
+      setTimeout(connect, 3000);
     };
-
-    eventSourceRef.current = es;
-  }, []);
+  }, [url, enabled]);
 
   useEffect(() => {
     connect();
-    return () => eventSourceRef.current?.close();
+    return () => {
+      eventSourceRef.current?.close();
+      eventSourceRef.current = null;
+    };
   }, [connect]);
-
-  return { connected };
 }

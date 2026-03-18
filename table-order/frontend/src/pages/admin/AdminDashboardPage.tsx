@@ -21,10 +21,14 @@ export default function AdminDashboardPage() {
   useEffect(() => { loadDashboard(); }, [loadDashboard]);
 
   useOrderSSE({
-    onOrderCreated: () => loadDashboard(),
-    onOrderStatusChanged: () => { loadDashboard(); if (selectedTableId) loadTableOrders(selectedTableId); },
-    onOrderDeleted: () => { loadDashboard(); if (selectedTableId) loadTableOrders(selectedTableId); },
-    onTableSessionCompleted: () => { loadDashboard(); setSelectedTableId(null); },
+    url: 'http://localhost:8080/api/sse/orders/admin',
+    onEvent: (type) => {
+      loadDashboard();
+      if (type === 'ORDER_STATUS_CHANGED' || type === 'ORDER_DELETED') {
+        if (selectedTableId) loadTableOrders(selectedTableId);
+      }
+      if (type === 'TABLE_SESSION_COMPLETED') setSelectedTableId(null);
+    },
   });
 
   const loadTableOrders = (tableId: number) => {
