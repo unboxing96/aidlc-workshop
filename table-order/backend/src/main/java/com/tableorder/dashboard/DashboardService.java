@@ -128,7 +128,7 @@ public class DashboardService {
                 .orElseThrow(() -> new NotFoundException("테이블을 찾을 수 없습니다."));
 
         if (table.getCurrentSessionId() == null) {
-            throw new BusinessException("활성 세션이 없습니다.");
+            throw new BusinessException("NO_ACTIVE_SESSION", "활성 세션이 없습니다.");
         }
 
         List<OrderEntity> orders = orderRepository.findByTableIdAndSessionIdOrderByCreatedAtDesc(tableId, table.getCurrentSessionId());
@@ -138,7 +138,7 @@ public class DashboardService {
                 .count();
 
         if (incompleteCount > 0) {
-            throw new BusinessException("미완료 주문 " + incompleteCount + "건이 있어 이용 완료할 수 없습니다.");
+            throw new BusinessException("INCOMPLETE_ORDERS", "미완료 주문 " + incompleteCount + "건이 있어 이용 완료할 수 없습니다.");
         }
 
         LocalDateTime completedAt = LocalDateTime.now();
