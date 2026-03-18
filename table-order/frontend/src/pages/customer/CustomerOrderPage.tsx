@@ -15,6 +15,13 @@ export default function CustomerOrderPage() {
   const tableId = Number(localStorage.getItem('tableId'));
   const tableNumber = Number(localStorage.getItem('tableNumber'));
 
+  // 빈 장바구니로 접근 시 cart 페이지로 리다이렉트
+  useEffect(() => {
+    if (items.length === 0 && status === 'confirm') {
+      navigate(`/table/${token}/cart`, { replace: true });
+    }
+  }, [items.length, status, navigate, token]);
+
   useEffect(() => {
     if (status === 'success') {
       const timer = setTimeout(() => {
