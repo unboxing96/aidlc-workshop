@@ -1,5 +1,9 @@
 # Unit of Work - Story Map
 
+## Unit 0: 공통 기반 (0 stories — 인프라 설정)
+
+프로젝트 초기화, 공통 Entity/DTO, API 인터페이스 계약, 설정 파일. User Story 없음.
+
 ## Unit 1: 테이블 및 인증 (5 stories)
 
 | Story ID | Story Name | Persona |
@@ -55,6 +59,7 @@
 
 | Unit | Story 수 | 고객 | 관리자 |
 |------|---------|------|--------|
+| Unit 0: 공통 기반 | 0 | 0 | 0 |
 | Unit 1: 테이블/인증 | 5 | 1 | 4 |
 | Unit 2: 메뉴 | 7 | 2 | 5 |
 | Unit 3: 장바구니/주문 | 6 | 6 | 0 |
