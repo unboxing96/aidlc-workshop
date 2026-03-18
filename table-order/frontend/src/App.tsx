@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import CustomerSetupPage from './pages/customer/CustomerSetupPage';
 import CustomerMenuPage from './pages/customer/CustomerMenuPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AdminTableManagePage from './pages/admin/AdminTableManagePage';
 import AdminMenuManagePage from './pages/admin/AdminMenuManagePage';
 import CustomerCartPage from '@/pages/customer/CustomerCartPage';
 import CustomerOrderPage from '@/pages/customer/CustomerOrderPage';
@@ -20,8 +22,8 @@ export default function App() {
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLoginPage />} />
-        <Route path="/admin/dashboard" element={<div>Dashboard (Unit 5)</div>} />
-        <Route path="/admin/tables" element={<div>Table Manage (Unit 5)</div>} />
+        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/admin/tables" element={<AdminTableManagePage />} />
         <Route path="/admin/menus" element={<AdminMenuManagePage />} />
 
         {/* Default */}
