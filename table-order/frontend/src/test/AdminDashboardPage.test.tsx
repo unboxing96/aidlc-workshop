@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage';
-import * as dashboardApiModule from '../services/dashboardApi';
+// @ts-ignore
+import * as _dashboardApiModule from '../services/dashboardApi';
 
 vi.mock('../services/dashboardApi', () => ({
   dashboardApi: {

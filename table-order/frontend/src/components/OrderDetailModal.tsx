@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { OrderDetailItem, dashboardApi } from '../services/dashboardApi';
+import { OrderDetailItem } from '../services/dashboardApi';
 import { OrderStatus } from '../types';
 import ConfirmDialog from './ConfirmDialog';
 

@@ -1,5 +1,5 @@
 import api from './api';
-import { Order, OrderHistory, OrderStatus } from '../types';
+import { /* Order, */ OrderHistory, OrderStatus } from '../types';
 
 export interface DashboardTableCard {
   tableId: number;
