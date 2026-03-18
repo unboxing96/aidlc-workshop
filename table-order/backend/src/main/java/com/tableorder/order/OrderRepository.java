@@ -5,7 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     Page<OrderEntity> findByTableIdAndSessionIdOrderByCreatedAtAsc(Long tableId, String sessionId, Pageable pageable);
     long countByOrderNumberStartingWith(String prefix);
+    List<OrderEntity> findByTableIdAndSessionId(Long tableId, String sessionId);
+    void deleteByTableIdAndSessionId(Long tableId, String sessionId);
 }

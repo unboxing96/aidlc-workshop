@@ -7,6 +7,7 @@ import com.tableorder.entity.OrderEntity;
 import com.tableorder.entity.OrderHistoryEntity;
 import com.tableorder.entity.OrderStatus;
 import com.tableorder.entity.TableEntity;
+import com.tableorder.order.OrderRepository;
 import com.tableorder.table.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
