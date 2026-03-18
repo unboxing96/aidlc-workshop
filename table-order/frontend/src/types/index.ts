@@ -98,3 +98,30 @@ export interface TableAuthResponse {
   tableId: number;
   tableNumber: number;
 }
+
+// Auth Types
+export interface AdminLoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface AdminRegisterRequest {
+  username: string;
+  password: string;
+}
+
+export interface AdminLoginResponse {
+  token: string;
+}
+
+export interface MessageResponse {
+  message: string;
+}
+
+export interface TableResponse {
+  id: number;
+  tableNumber: number;
+  accessToken: string;
+  currentSessionId: string | null;
+  createdAt: string;
+}

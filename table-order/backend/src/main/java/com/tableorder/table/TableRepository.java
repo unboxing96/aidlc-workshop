@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface TableRepository extends JpaRepository<TableEntity, Long> {
     Optional<TableEntity> findByAccessToken(String accessToken);
+    boolean existsByTableNumber(int tableNumber);
 }

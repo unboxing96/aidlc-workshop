@@ -3,11 +3,15 @@ aidlc-docs/audit.md
 aidlc-docs/aidlc-state.md
 
 # Backend
-table-order/backend/build/
 table-order/backend/.gradle/
+table-order/backend/build/
 table-order/backend/data/
 table-order/backend/uploads/
 
 # Frontend
 table-order/frontend/node_modules/
 table-order/frontend/dist/
+table-order/frontend/tsconfig.tsbuildinfo
+
+# IDE
+.kiro/settings/
