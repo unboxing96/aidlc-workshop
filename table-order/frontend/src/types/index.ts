@@ -74,10 +74,31 @@ export interface TableResponse {
   tableNumber: number;
   accessToken: string;
   currentSessionId: string | null;
+  createdAt: string;
 }
 
 export interface MessageResponse {
   message: string;
+}
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+}
+
+export interface OrderHistoryResponse {
+  id: number;
+  orderNumber: string;
+  tableNumber: number;
+  sessionId: string;
+  totalAmount: number;
+  items: string;
+  orderedAt: string;
+  completedAt: string;
 }
 
 // === SSE ===

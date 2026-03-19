@@ -1,5 +1,8 @@
 package com.tableorder.config;
 
+import com.tableorder.auth.JwtAuthFilter;
+import com.tableorder.auth.TableTokenFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -9,10 +12,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
+    private final TableTokenFilter tableTokenFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -26,17 +34,16 @@ public class SecurityConfig {
             .headers(h -> h.frameOptions(f -> f.sameOrigin()))
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // 공개 API
                 .requestMatchers("/api/admin/register", "/api/admin/login").permitAll()
                 .requestMatchers("/api/tables/auth").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/menus/**", "/api/categories/**").permitAll()
                 .requestMatchers("/api/images/**").permitAll()
                 .requestMatchers("/api/sse/**").permitAll()
-                // 나머지는 인증 필요 (각 Unit에서 JWT/TableToken 필터 추가)
                 .anyRequest().authenticated()
-            );
-        // NOTE: JwtAuthFilter, TableTokenFilter는 Unit 1에서 추가
+            )
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(tableTokenFilter, JwtAuthFilter.class);
         return http.build();
     }
 }
