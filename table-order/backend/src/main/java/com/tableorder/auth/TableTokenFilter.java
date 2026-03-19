@@ -23,6 +23,11 @@ public class TableTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        String path = request.getRequestURI();
+        if (path.equals("/api/tables/auth") || path.startsWith("/api/admin/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         String token = request.getHeader("X-Table-Token");
         if (token != null) {
             Optional<TableEntity> table = tableRepository.findByAccessToken(token);

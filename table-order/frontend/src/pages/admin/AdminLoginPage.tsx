@@ -20,7 +20,7 @@ export default function AdminLoginPage() {
     if (isRegisterMode) {
       const ok = await register(username, password);
       if (ok) {
-        setSuccessMsg('회원가입 성공! 로그인해주세요.');
+        setSuccessMsg('Registration successful! Please login.');
         setIsRegisterMode(false);
         setPassword('');
       }
@@ -30,44 +30,32 @@ export default function AdminLoginPage() {
     }
   };
 
+  const inputStyle = { width: '100%', borderRadius: '0.25rem', border: '1px solid #d1d5db', padding: '0.5rem 0.75rem', marginBottom: '0.75rem', boxSizing: 'border-box' as const };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow">
-        <h1 className="mb-6 text-center text-xl font-bold">
-          {isRegisterMode ? '관리자 회원가입' : '관리자 로그인'}
+    <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9fafb', padding: '1rem' }}>
+      <div style={{ width: '100%', maxWidth: '24rem', borderRadius: '0.5rem', backgroundColor: 'white', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+        <h1 style={{ marginBottom: '1.5rem', textAlign: 'center', fontSize: '1.25rem', fontWeight: 'bold' }}>
+          {isRegisterMode ? 'Admin Register' : 'Admin Login'}
         </h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="사용자명"
-            className="w-full rounded border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={loading}
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호"
-            className="w-full rounded border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={loading}
-          />
-          {error && <p className="text-sm text-red-500">{error}</p>}
-          {successMsg && <p className="text-sm text-green-600">{successMsg}</p>}
+        <form onSubmit={handleSubmit}>
+          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" style={inputStyle} disabled={loading} />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" style={inputStyle} disabled={loading} />
+          {error && <p style={{ color: 'red', fontSize: '0.875rem', marginBottom: '0.75rem' }}>{error}</p>}
+          {successMsg && <p style={{ color: 'green', fontSize: '0.875rem', marginBottom: '0.75rem' }}>{successMsg}</p>}
           <button
             type="submit"
             disabled={loading || !username.trim() || !password.trim()}
-            className="w-full rounded bg-blue-600 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+            style={{ width: '100%', borderRadius: '0.25rem', backgroundColor: '#2563eb', color: 'white', padding: '0.5rem', border: 'none', cursor: 'pointer' }}
           >
-            {loading ? '처리 중...' : isRegisterMode ? '회원가입' : '로그인'}
+            {loading ? 'Processing...' : isRegisterMode ? 'Register' : 'Login'}
           </button>
         </form>
         <button
           onClick={() => { setIsRegisterMode(!isRegisterMode); setSuccessMsg(null); }}
-          className="mt-4 w-full text-center text-sm text-blue-600 hover:underline"
+          style={{ marginTop: '1rem', width: '100%', textAlign: 'center', fontSize: '0.875rem', color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer' }}
         >
-          {isRegisterMode ? '로그인으로 전환' : '회원가입으로 전환'}
+          {isRegisterMode ? 'Switch to Login' : 'Switch to Register'}
         </button>
       </div>
     </div>
