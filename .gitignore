@@ -1,3 +1,40 @@
+# === IDE ===
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# === OS ===
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# === Backend (Java/Gradle) ===
+table-order/backend/build/
+table-order/backend/.gradle/
+table-order/backend/data/
+table-order/backend/uploads/
+table-order/backend/bin/
+*.class
+*.jar
+*.war
+
+# === Frontend (Node/Vite) ===
+table-order/frontend/node_modules/
+table-order/frontend/dist/
+table-order/frontend/.env.local
+table-order/frontend/.env.*.local
+
+# === AIDLC (per-session, not shared) ===
 aidlc-docs/audit.md
 aidlc-docs/aidlc-state.md
+
+# === Logs ===
+*.log
+logs/
